@@ -241,7 +241,7 @@ class ServersView(FlaskView):
             response = requests.get("https://api.ipify.org?format=json")
             response.raise_for_status()
             _ip = response.json().get("ip")
-            LINK = LINK + _ip + ":" + APP_LINK_PORT + "/shortlink"
+            LINK = LINK + _ip + ":" + APP_LINK_PORT + "/"
         except Exception as e:
            return jsonify(message=f"Erreur: {str(e)}."), 404
 
