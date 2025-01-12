@@ -10,11 +10,13 @@ Elle est modifiée aux titres suivants:
 
 # Installation
 
+Vous pouvez télécharger l'archive au format .zip ou alors faire un clone du repo github.
+
 Deux scripts .sh sont disponibles pour rendre plus "simple" l'installation. Néanmoins, il engage l'utilisateur de comprendre les potentielles erreurs liées au lancement du programme.
 
 Ils s'éxecutent dans l'ordre suivant:
-    1. install.sh pour installer les librairies et packages système liées au programme (ex: mumble-server, les librairies pour zeroc). (need sudo perms)
-    2. dep_collector.sh pour l'installation des dépendances dans le venv
+    1. install.sh pour installer les librairies et packages système liées au programme (ex: mumble-server, les librairies pour zeroc). (necessite les permissions Administrateur)
+    2. dep_collector.sh pour l'installation des dépendances dans le venv (il faut créer et se mettre dans le venv avant d'utiliser ce script)
 
 # Démarrage
 
