@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MumbleLink</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: url('https://steamuserimages-a.akamaihd.net/ugc/2310974141604980016/B4EF3A7A2D1772DE26B1A6F51CE33A04FD8BB917/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false') no-repeat center center/cover;
+            opacity: 0.3;
+        }
+        .content {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #4caf50;
+        }
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+        .card {
+            background: #2e3b4e;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            color: #fff;
+            min-width: 250px;
+        }
+        .card p {
+            margin: 10px 0;
+        }
+        .card button {
+            background: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .card button:hover {
+            background: #45a049;
+        }
+        #message {
+            margin-top: 20px;
+            font-style: italic;
+            color: #ffc107;
+        }
+        .mumble-image {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="content">
+        <h2>Mumble Link</h2>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Icons_mumble.svg/1200px-Icons_mumble.svg.png" alt="Mumble Logo" class="mumble-image" width="150">
+        <div class="card-container">
+            <h1 style="color: rgb(185, 54, 54);">Erreur 404</h1>
+            <p style="color: rgb(185, 54, 54);">
+                Le joueur indiqué n'est pas connecté à un serveur relié au backend ou alors il n'a pas été trouvé ! Veuillez reessayer dans quelques secondes.
+            </p>
+        </div>
+        <p id="message"></p>
+    </div>
+</body>
+</html>

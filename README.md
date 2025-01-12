@@ -16,6 +16,12 @@ Ils s'éxecutent dans l'ordre suivant:
     1. install.sh pour installer les librairies et packages système liées au programme (ex: mumble-server, les librairies pour zeroc). (need sudo perms)
     2. dep_collector.sh pour l'installation des dépendances dans le venv
 
+# Démarrage
+
+Il y a deux serveurs à démarrer:
+1. python3 runserver.py (pour démarrer le backend)
+2. python3 runfrontend.py (pour démarrer le frontend, ie le site web qui redirige les utilisateurs)
+
 # "Protection du backend"
 
 Pour empecher n'importe qui de faire des requetes sur votre backend et donc d'en avoir le controle vous pouvez utiliser un firewall (ex: iptables).

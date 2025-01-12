@@ -10,8 +10,12 @@ from builtins import map
 from builtins import str
 from datetime import timedelta
 
+import os
+import json
+
 from flask import request, jsonify, json, Response
 from flask_classful import FlaskView, route
+import requests
 
 from app import app, meta, auth, auth_enabled
 from app.utils import get_server_conf, get_server_port, get_all_users_count
@@ -171,6 +175,77 @@ class ServersView(FlaskView):
             return jsonify(message="Server deleted")
         except:
             return jsonify(message="Error deleting server")
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('shortlink', methods=['POST'])
+    def shortlink_post(self):
+        """ Redirects POST requests """
+        uuid = request.args.get('uuid')
+        host = request.args.get('host')
+        port = request.args.get('port')
+        pseudo = request.args.get('pseudo')
+
+        if not all([uuid, host, port, pseudo]):
+            return jsonify({"error": "All parameters (uuid, host, port, pseudo) are required"}), 400
+
+        directory = "uuids"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        name = uuid + ".json"
+        file_path = os.path.join(directory, name)
+
+        data = {
+            "host": host,
+            "port": port,
+            "pseudo": pseudo
+        }
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        with open(file_path, 'w') as json_file:
+            json.dump(data, json_file, indent=4)
+        return jsonify(message="Sucess !"), 200
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('shortlink', methods=['DELETE'])
+    def shortlink_delete(self):
+        """ Redirects DELETE requests """
+        uuid = request.args.get('uuid')
+        if not uuid:
+            return jsonify(message="uuid non spécifiée."), 400
+
+        # Construire le chemin du fichier
+        directory = "uuids"
+        file_path = os.path.join(directory, f"{uuid}.json")
+
+        # Vérifier si le fichier existe
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)  # Supprimer le fichier
+                return jsonify(message=f"Fichier {uuid}.json supprimé avec succès."), 200
+            except Exception as e:
+                return jsonify(message=f"Erreur lors de la suppression du fichier : {str(e)}"), 500
+        else:
+            return jsonify(message=f"Fichier {uuid}.json introuvable."), 404
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('redirecturl', methods=['GET'])
+    def redirecturl(self):
+        """ GET redirect url """
+        
+        APP_LINK_PORT = os.environ.get("APP_LINK_PORT", "8000")
+        LINK = "http://"
+        try:
+            response = requests.get("https://api.ipify.org?format=json")
+            response.raise_for_status()
+            _ip = response.json().get("ip")
+            LINK = LINK + _ip + ":" + APP_LINK_PORT + "/shortlink"
+        except Exception as e:
+           return jsonify(message=f"Erreur: {str(e)}."), 404
+
+        return jsonify({'url': LINK}), 200
 
     @conditional(auth.login_required, auth_enabled)
     @route('delete', methods=['DELETE'])
