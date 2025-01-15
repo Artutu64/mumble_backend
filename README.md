@@ -20,11 +20,24 @@ Ils s'éxecutent dans l'ordre suivant:
 
     2. dep_collector.sh pour l'installation des dépendances dans le venv (il faut créer et se mettre dans le venv avant d'utiliser ce script)
 
+    3. Configurer le .env avec les informations que vous voulez.
+
 # Démarrage
 
 Il y a deux serveurs à démarrer:
 1. python3 runserver.py (pour démarrer le backend)
 2. python3 runfrontend.py (pour démarrer le frontend, ie le site web qui redirige les utilisateurs)
+
+# Modification web
+
+Vous pouvez modifier le contenu des fichiers: error.html et index.html afin de customiser vos pages de connexion.
+Néanmoins la page index.html peut inclure les textes suivants qui sont modifiés lors de l'affichage de la page au client:
+
+    - {MUMBLE_HOST} : pour afficher le host de connexion au serveur mumble
+    
+    - {MUMBLE_PORT} : pour afficher le port du serveur mumble
+
+    - {MUMBLE_PLAYER} : pour afficher le pseudo que doit utiliser le joueur sur mumble
 
 # "Protection du backend"
 
