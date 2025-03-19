@@ -1,3 +1,8 @@
+# Issues et report-bug
+Merci de report les bugs dans l'onglet Issues du projet suivant (en précisant que l'erreur vient du backend): https://github.com/Artutu64/MumbleLink 
+
+# Informations de modification
+
 Ceci est une copie modifiée de: https://github.com/alfg/murmur-rest
 
 Elle est modifiée aux titres suivants:
