@@ -56,6 +56,7 @@ Pour empecher n'importe qui de faire des requetes sur votre backend et donc d'en
     3. Ajoutez la règle pour interdire la connexion des autres machines:
         ``sudo iptables -A INPUT -p tcp --dport VOTRE_PORT -j DROP``
 
+Il est important de noter que ce n'est pas une solution de sécurité suffisante (un utilisateur sur la machine pourra toujours executer des requetes depuis votre machine ou depuis une machine autorisée, en cas de compromission de ces machines le serveur compromis pourra controler le backend).
 
 # License
 The MIT License (MIT)
