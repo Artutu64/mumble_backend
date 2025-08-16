@@ -10,7 +10,7 @@ All default settings. No configuration required, unless you want to enable diges
 import os
 
 # Settings for running a local dev server with runserver.py
-APP_HOST = os.environ.get("APP_HOST", "0.0.0.0")
+APP_HOST = os.environ.get("APP_HOST", "localhost")
 APP_PORT = os.environ.get("APP_PORT", 8080)
 APP_DEBUG = os.environ.get("APP_DEBUG") == "True"
 APP_SECRET_KEY = os.environ.get("APP_SECRET_KEY", os.urandom(24))

@@ -54,5 +54,5 @@ def home():
         return Response(error_content, mimetype='text/html')
 
 if __name__ == '__main__':
-    APP_LINK_PORT = os.environ.get("APP_LINK_PORT", "8000")
+    APP_LINK_PORT = os.environ.get("APP_LINK_PORT", "80")
     app.run(debug=True, host='0.0.0.0', port=APP_LINK_PORT)
