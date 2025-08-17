@@ -21,7 +21,7 @@ case "$1" in
     ;;
   run)
     echo "Lancement du conteneur Docker..."
-    sudo docker run -it --name $CONTAINER_NAME -p 8080:80 -p 8443:443 -p 20821:20821 \
+    sudo docker run -it --name $CONTAINER_NAME -p 80:80 -p 443:443 -p 20821:20821 \
       -p 64739-64839:64739-64839/tcp -p 64739-64839:64739-64839/udp $IMAGE_NAME
     ;;
   stop)

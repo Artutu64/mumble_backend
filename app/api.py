@@ -237,16 +237,25 @@ class ServersView(FlaskView):
         
         APP_LINK_PORT = os.environ.get("IP", "127.0.0.1")
         Domaine = os.environ.get("Domaine", "null")
-        HTTPS = bool(os.environ.get("HTTPS", "False"))
+        HTTPS = os.environ.get("HTTPS", "False") == "True"
+        PORT_HTTP = os.environ.get("PORT_HTTP", "80")
+        PORT_HTTPS = os.environ.get("PORT_HTTPS", "443")
 
         LINK = "http://"
+        port = ":" + PORT_HTTP
+        if port == "80":
+            port = ""
+
         if HTTPS:
             LINK = "https://"
+            port = ":" + PORT_HTTPS
+            if port == "443":
+                port = ""
 
         if Domaine != "null":
-            LINK += Domaine + "/"
+            LINK += Domaine + port + "/"
         else:
-            LINK += APP_LINK_PORT + "/"
+            LINK += APP_LINK_PORT + port + "/"
 
         return jsonify({'url': LINK}), 200
 

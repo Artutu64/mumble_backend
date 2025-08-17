@@ -26,6 +26,7 @@ func main() {
 
 	httpsEnv := os.Getenv("HTTPS")
 	certFile := os.Getenv("Certificat")
+
 	if certFile == "" {
 		certFile = "./none.crt"
 	}
@@ -53,10 +54,8 @@ func main() {
 		}()
 
 		go func() {
-			log.Println("Serveur HTTP redirection 80 démarré")
-			err := http.ListenAndServe(":80", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				http.Redirect(w, r, "https://"+r.Host+r.RequestURI, http.StatusMovedPermanently)
-			}))
+			log.Println("Reverse proxy HTTP démarré sur :80")
+			err := http.ListenAndServe(":80", proxy)
 			if err != nil {
 				log.Fatalf("Erreur serveur HTTP : %v", err)
 			}

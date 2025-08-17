@@ -71,6 +71,6 @@ for i in {1..30}; do
 done
 
 echo "[*] Lancement de l'API REST murmur-rest..."
-screen -dmS SERVER_API bash -c "cd /app && gunicorn -w 10 -b 0.0.0.0:8080 runserver:app"
+screen -dmS SERVER_API bash -c "cd /app && gunicorn -w 10 -b 0.0.0.0:9080 runserver:app"
 
 exec /bin/sh

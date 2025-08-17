@@ -2,6 +2,7 @@ import requests
 import ipaddress
 import secrets
 from tabulate import tabulate  # pip install tabulate si nécessaire
+import shutil
 
 BLACK = "\033[30m"
 RED = "\033[31m"
@@ -21,6 +22,8 @@ HTTPS = False
 Certificate = "./none.crt"
 KEY = secrets.token_hex(16)
 IV = secrets.token_hex(8)
+PORT_HTTP=80
+PORT_HTTPS=443
 #===============================================================
 
 try:
@@ -75,6 +78,36 @@ try:
 
     print(f"{GREEN} |--> Votre adresse IP: {IP}{RESET}")
 
+    defaultPort = inputWithValues("Voulez vous utiliser les ports par défaut pour le serveur web (80/443) (yes, y, no, n): ", ["yes", "y", "no", "n"])
+    defaultPort = (defaultPort == "yes" or defaultPort == "y")
+
+    if not defaultPort:
+        portHttp = 80
+        inValidPort = True
+        while inValidPort:
+            inValidPort = False
+            try:
+                portHttp = int(input(f"Veuillez saisir le port HTTP (>1000): "))
+                if portHttp < 1000 or portHttp >= 65535 or portHttp == 9080:
+                    inValidPort = True
+            except ValueError:
+                inValidPort = True
+        PORT_HTTP = portHttp
+        portHttp = 443
+        inValidPort = True
+        while inValidPort:
+            inValidPort = False
+            try:
+                portHttp = int(input("Veuillez saisir le port HTTPS (>1000): "))
+                if portHttp < 1000 or portHttp >= 65535 or portHttp == PORT_HTTP or portHttp == 9080:
+                    inValidPort = True
+            except ValueError:
+                inValidPort = True
+        PORT_HTTPS = portHttp
+        print(f"{GREEN} |--> Ports HTTP.S: {PORT_HTTP}/{PORT_HTTPS}{RESET}")
+    else:
+        print(f"{GREEN} |--> Ports HTTP.S: {PORT_HTTP}/{PORT_HTTPS}{RESET}")
+
     hasDomainInput = inputWithValues("Avez vous un nom de domaine (yes, y, no, n): ", ["yes", "y", "no", "n"])
     hasDomain = (hasDomainInput == "yes" or hasDomainInput == "y")
     if not hasDomain:
@@ -128,6 +161,7 @@ try:
 
     if hasDomain:
         configureHttps = inputWithValues(f"Voulez vous configurer https (yes, y, no, n): ", ["yes", "y", "no", "n"])
+        inputWithValues(f"Avez vous créé un fichier key.pem (avec exactement ce nom) dans le dossier courrant (yes, y): ", ["yes", "y"])
         configureHttps = (configureHttps == "yes" or configureHttps == "y")
         if configureHttps:
             filePath = input("Merci de saisir le chemin du certificat (il doit être dans ce dossier): ")
@@ -151,6 +185,8 @@ try:
         "Domaine": Domain,
         "HTTPS": HTTPS,
         "Certificat": Certificate,
+        "PORT_HTTP": PORT_HTTP,
+        "PORT_HTTPS": PORT_HTTPS,
         "KEY": KEY,
         "IV": IV
     }
@@ -170,13 +206,15 @@ try:
 
     env_data = {
         "APP_HOST": "127.0.0.1",
-        "APP_PORT": 8080,
+        "APP_PORT": 9080,
         "APP_DEBUG": True,
         "ENABLE_AUTH": False,
         "USERS": "admin:password,admin2:password2",
         "MURMUR_ICE_HOST": "127.0.0.1",
         "MURMUR_ICE_PORT": 6502,
         "APP_LINK_PORT": 80,
+        "PORT_HTTP": PORT_HTTP,
+        "PORT_HTTPS": PORT_HTTPS,
         "KEY": KEY,
         "IV": IV,
         "IP": IP,
@@ -186,10 +224,36 @@ try:
 
     }
 
+    def recreate_docker_script(port_http="80", port_https="443"):
+        src = "./etc/docker.sh"
+        dst = "./docker.sh"
+
+        # 1. Supprimer l'ancien fichier s'il existe
+        if os.path.exists(dst):
+            os.remove(dst)
+
+        # 2. Lire le contenu du fichier source
+        with open(src, "r") as f:
+            content = f.read()
+
+        # 3. Remplacer la ligne docker run
+        old_line = "docker run -it --name $CONTAINER_NAME -p 80:80 -p 443:443"
+        new_line = f"docker run -it --name $CONTAINER_NAME -p {port_http}:80 -p {port_https}:443"
+        content = content.replace(old_line, new_line)
+
+        # 4. Écrire le nouveau fichier
+        with open(dst, "w") as f:
+            f.write(content)
+
+        # Rendre exécutable (optionnel)
+        os.chmod(dst, 0o755)
+    recreate_docker_script(PORT_HTTP, PORT_HTTPS)
+
     print()
     ecrire_env(env_data, ".env")
     print(f"{CYAN}Gardez bien ces données en tête car vous en aurez besoin pour configurer le plugin.{RESET}")
     print()
+
 
 except KeyboardInterrupt:
     print("\n")
