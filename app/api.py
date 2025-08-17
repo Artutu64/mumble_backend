@@ -235,15 +235,18 @@ class ServersView(FlaskView):
     def redirecturl(self):
         """ GET redirect url """
         
-        APP_LINK_PORT = os.environ.get("APP_LINK_PORT", "8000")
+        APP_LINK_PORT = os.environ.get("IP", "127.0.0.1")
+        Domaine = os.environ.get("Domaine", "null")
+        HTTPS = bool(os.environ.get("HTTPS", "False"))
+
         LINK = "http://"
-        try:
-            response = requests.get("https://api.ipify.org?format=json")
-            response.raise_for_status()
-            _ip = response.json().get("ip")
-            LINK = LINK + _ip + ":" + APP_LINK_PORT + "/"
-        except Exception as e:
-           return jsonify(message=f"Erreur: {str(e)}."), 404
+        if HTTPS:
+            LINK = "https://"
+
+        if Domaine != "null":
+            LINK += Domaine + "/"
+        else:
+            LINK += APP_LINK_PORT + "/"
 
         return jsonify({'url': LINK}), 200
 

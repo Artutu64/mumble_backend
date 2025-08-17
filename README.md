@@ -1,64 +1,65 @@
-# Issues et report-bug
+<div style="text-align: center;">
+    <br/>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Icons_mumble.svg/1200px-Icons_mumble.svg.png" alt="Mumble Logo" width="200"/>
+    <h1>Mumble Link v1</h1>
+</div>
+
+<p align="center">
+	🌐 <a href="https://github.com/Artutu64/MumbleLink">Spigot-MC</a>
+	 &#124;
+	📓 <a href="https://github.com/Artutu64/MumbleLink">Github</a>
+	 &#124;
+	🔎 <a href="https://github.com/Artutu64/MumbleLink/issues">Issue</a>
+</p>
+
+> 💬️ MumbleLink-Backend est le code qui gère la partie logique (création de serveur, création de lien) lié au plugin spigot MumbleLink.
+
+# Issues et Report-bug
 Merci de report les bugs dans l'onglet Issues du projet suivant (en précisant que l'erreur vient du backend): https://github.com/Artutu64/MumbleLink 
 
-# Informations de modification
-
-Ceci est une copie modifiée de: https://github.com/alfg/murmur-rest
-
-Elle est modifiée aux titres suivants:
-
-    1. Liberté d'utilisation : La licence MIT permet d'utiliser, copier, modifier, fusionner, publier, distribuer, sous-licencier et même vendre des copies du logiciel, sans aucune restriction, tant que les conditions de la licence sont respectées.
-
-    2. Conditions minimales : La seule exigence est d'inclure la mention du copyright et de la licence dans toutes les copies ou parties substantielles du logiciel. Cela garantit que l'auteur original est crédité.
-
-    3. Aucune garantie : Le logiciel est fourni "tel quel", sans garantie d'aucune sorte. Cela signifie que les auteurs ne sont pas responsables des problèmes éventuels liés à l'utilisation du code.
-
 # Installation
+*Depuis les dernières versions, Mumblelink-Backend n'est installable que via **_Docker_**.*
 
-Vous pouvez télécharger l'archive au format .zip ou alors faire un clone du repo github.
+1. **Clônage:** Commencer par cloner le projet actuel 
+```
+git clone https://github.com/Artutu64/mumble_backend.git
+```
+2. **Installation des dépendances:** L'installation du projet nécessite: python3, venv et pip (pour le script de configuration) et le code fonctionne sur Docker.
 
-Deux scripts .sh sont disponibles pour rendre plus "simple" l'installation. Néanmoins, il engage l'utilisateur de comprendre les potentielles erreurs liées au lancement du programme.
+3. **Configuration:** Utiliser les commandes suivantes et suivre le flot de questions
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install requests
+pip install ipaddress
+pip install secrets
+pip install tabulate
+pip install pyopenssl
+pip install cryptography
+python3 scripts/install.py
+deactivate
+```
+4. **Build:** Il faut ensuite build conteneur 
+```
+sudo ./docker.sh build
+```
+5. **Démarrage:** Puis démarrer le conteneur 
+```
+sudo ./docker.sh start
+```
 
-Ils s'éxecutent dans l'ordre suivant:
-
-    1. install.sh pour installer les librairies et packages système liées au programme (ex: mumble-server, les librairies pour zeroc). (necessite les permissions Administrateur)
-
-    2. dep_collector.sh pour l'installation des dépendances dans le venv (il faut créer et se mettre dans le venv avant d'utiliser ce script)
-
-    3. Configurer le .env avec les informations que vous voulez.
-
-# Démarrage
-
-Il y a deux serveurs à démarrer:
-1. python3 runserver.py (pour démarrer le backend)
-2. python3 runfrontend.py (pour démarrer le frontend, ie le site web qui redirige les utilisateurs)
+*Le ./docker.sh possède aussi les commandes [run|stop|restart|delete] afin d'executer les commandes Docker associées.*
 
 # Modification web
 
 Vous pouvez modifier le contenu des fichiers: error.html et index.html afin de customiser vos pages de connexion.
-Néanmoins la page index.html peut inclure les textes suivants qui sont modifiés lors de l'affichage de la page au client:
+Néanmoins la page index.html doit inclure les textes suivants qui sont modifiés lors de l'affichage de la page au client:
 
     - {MUMBLE_HOST} : pour afficher le host de connexion au serveur mumble
     
     - {MUMBLE_PORT} : pour afficher le port du serveur mumble
 
     - {MUMBLE_PLAYER} : pour afficher le pseudo que doit utiliser le joueur sur mumble
-
-# "Protection du backend"
-
-Pour empecher n'importe qui de faire des requetes sur votre backend et donc d'en avoir le controle vous pouvez utiliser un firewall (ex: iptables).
-
-    1. Faites la liste des adresses ip (privées et publiques) que vous voulez autoriser (vos machines) (par défaut, VOTRE_PORT=8080)
-
-    2. Ajoutez les règles pour autoriser la connexion au port de l'application:
-        ``sudo iptables -A INPUT -p tcp --dport VOTRE_PORT -s VOTRE_IP -j ACCEPT``
-    
-    3. Ajoutez la règle pour interdire la connexion des autres machines:
-        ``sudo iptables -A INPUT -p tcp --dport VOTRE_PORT -j DROP``
-    
-    4. Rendre les règles iptables persistantes
-
-Il est important de noter que ce n'est pas une solution de sécurité suffisante (un utilisateur sur la machine pourra toujours executer des requetes depuis votre machine ou depuis une machine autorisée, en cas de compromission de ces machines le serveur compromis pourra controler le backend).
 
 # License
 The MIT License (MIT)

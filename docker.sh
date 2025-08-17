@@ -16,6 +16,9 @@ case "$1" in
     echo "Construction de l'image Docker..."
     sudo docker build -t $IMAGE_NAME .
     ;;
+  start)
+    sudo ./docker.sh run
+    ;;
   run)
     echo "Lancement du conteneur Docker..."
     sudo docker run -it --name $CONTAINER_NAME -p 80:80 -p 443:443 -p 20821:20821 \

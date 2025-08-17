@@ -12,6 +12,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math"
 	"net"
 	"net/http"
 	"net/url"
@@ -121,13 +122,6 @@ func (proxy *Proxy) handleConnection(conn net.Conn) {
 		}
 	}(conn)
 
-	// Protection Slowloris : deadline courte
-	err := conn.SetReadDeadline(time.Now().Add(5 * time.Second))
-	if err != nil {
-		log.Printf("Erreur lors de la définition de la deadline: %s\n", err.Error())
-		return
-	}
-
 	reader := bufio.NewReader(conn)
 	msg, err := reader.ReadString('\n')
 	if err != nil {
@@ -175,16 +169,16 @@ func (proxy *Proxy) handleConnection(conn net.Conn) {
 	ts, err := strconv.ParseInt(timestampStr, 10, 64)
 	if err != nil {
 		log.Printf("Timestamp invalide: %s", timestampStr)
-		_, err := conn.Write([]byte("Timestamp invalide\n"))
+		_, err := conn.Write([]byte("Timestamp invalide (conversion error)\n"))
 		if err != nil {
 			return
 		}
 		return
 	}
 	now := time.Now().Unix()
-	if ts > now || now-ts > 60 { // pas dans la minute courante
+	if math.Abs(float64(ts-now)) > 60 {
 		log.Printf("Timestamp trop ancien ou futur: %d", ts)
-		_, err := conn.Write([]byte("Timestamp invalide\n"))
+		_, err := conn.Write([]byte("Timestamp invalide (expired)\n"))
 		if err != nil {
 			return
 		}
@@ -242,15 +236,25 @@ func (proxy *Proxy) listen() {
 	}
 }
 
+func normalizeEnvVar(env string, length int) []byte {
+	clean := strings.TrimSpace(env)
+	if len(clean) > length {
+		clean = clean[:length]
+	} else if len(clean) < length {
+		clean = clean + strings.Repeat("0", length-len(clean))
+	}
+	return []byte(clean)
+}
+
 func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Erreur lors du chargement du fichier .env")
+		log.Fatal("Erreur lors du chargement du fichier .env2")
 	}
 
-	key := []byte(os.Getenv("KEY"))
-	iv := []byte(os.Getenv("IV"))
+	key := normalizeEnvVar(os.Getenv("KEY"), 32)
+	iv := normalizeEnvVar(os.Getenv("IV"), 16)
 
 	if len(key) != 32 || len(iv) != 16 {
 		log.Fatalf("Clé ou IV invalide: KEY=%d bytes, IV=%d bytes (il faut 16 chacun)", len(key), len(iv))
