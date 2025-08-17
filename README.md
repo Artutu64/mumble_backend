@@ -1,4 +1,4 @@
-<div style="text-align: center;">
+<div align="center">
     <br/>
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Icons_mumble.svg/1200px-Icons_mumble.svg.png" alt="Mumble Logo" width="200"/>
     <h1>Mumble Link v1</h1>
